@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriCare Outpatient EMR - Reception & Lilian Kathomi's Suite</title>
+  <meta name="description" content="Clinical Outpatient Pediatric and Clinical Nutrition Management System with Reception Desk and Specialist Portal for Lilian Kathomi.">
+  
+  <!-- Modern Google Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ========================================================
+       LOGIN OVERLAY / ROLE SELECTOR (1 Reception, 1 Specialist)
+       ======================================================== -->
+  <div class="login-overlay" id="loginOverlay" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="login-card">
+      <div class="login-card-header">
+        <div class="login-brand-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M2 12h20"/>
+            <path d="M12 2a7 7 0 0 1 7 7c0 4-7 11-7 11s-7-7-7-11a7 7 0 0 1 7-7z"/>
+          </svg>
+        </div>
+        <h2 id="loginTitle" style="font-size: 1.35rem; font-weight: 800; color: var(--text-main);">NutriCare Outpatient EMR</h2>
+        <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 0.25rem;">Select your workspace or sign in to continue</p>
+      </div>
+
+      <div class="login-card-body">
+        <p style="font-size: 0.8125rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
+          Select Portal (1-Click Instant Demo Access):
+        </p>
+
+        <div class="role-cards-grid">
+          <!-- 1. Reception Card -->
+          <div class="role-option-card" data-role-id="user-rec">
+            <div class="role-option-left">
+              <div class="role-option-avatar rec">RD</div>
+              <div>
+                <div class="role-option-title">Reception Desk</div>
+                <div class="role-option-sub">Front Desk • Patient check-in, triage & cash/insurance billing</div>
+              </div>
+            </div>
+            <span class="role-tag role-reception">Front Desk</span>
+          </div>
+
+          <!-- 2. Only One Specialist: Lilian Kathomi -->
+          <div class="role-option-card" data-role-id="spec-lilian">
+            <div class="role-option-left">
+              <div class="role-option-avatar dr1">LK</div>
+              <div>
+                <div class="role-option-title">Lilian Kathomi</div>
+                <div class="role-option-sub">Pediatric Nutritionist & Specialist • Outpatient consultations & care plans</div>
+              </div>
+            </div>
+            <span class="role-tag role-specialist">Specialist</span>
+          </div>
+        </div>
+
+        <!-- Or Email Sign In -->
+        <div style="border-top: 1px dashed var(--border-color); padding-top: 1.25rem;">
+          <form id="loginForm">
+            <div class="form-group" style="margin-bottom: 0.75rem;">
+              <label class="form-label" for="loginEmail">Staff Email</label>
+              <input type="email" id="loginEmail" class="form-input" placeholder="lilian.kathomi@nutricare.med" value="lilian.kathomi@nutricare.med">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" class="form-input" value="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              Sign In to Outpatient EMR
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-section">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M2 12h20"/>
+            <path d="M12 2a7 7 0 0 1 7 7c0 4-7 11-7 11s-7-7-7-11a7 7 0 0 1 7-7z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>NutriCare <span class="brand-badge">Clinical EMR</span></h1>
+          <span class="brand-subtitle">Pediatric & Clinical Nutrition Outpatient Consultation Center</span>
+        </div>
+      </div>
+
+      <!-- Live Search Bar -->
+      <div class="header-search">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input type="text" id="globalSearchInput" placeholder="Search patient name, MRN, phone, allergy, diagnosis..." aria-label="Search patients">
+      </div>
+
+      <!-- User Role Profile & Header Actions -->
+      <div class="header-actions">
+        <!-- Active User Badge -->
+        <div class="user-profile-badge" id="userProfileBtn" title="Click to switch portal / account">
+          <div class="user-avatar-mini" id="navUserAvatar">LK</div>
+          <div>
+            <div style="font-size:0.8125rem; font-weight:700; color:var(--text-main);" id="navUserName">Lilian Kathomi</div>
+            <span class="role-tag role-specialist" id="navRoleTag">Specialist</span>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary btn-sm" id="switchUserBtn" title="Switch between Reception and Specialist Lilian Kathomi">
+          🔄 Switch Role
+        </button>
+
+        <button class="btn btn-secondary btn-sm" id="themeToggleBtn" title="Toggle dark/light mode">
+          🌙 Dark Mode
+        </button>
+
+        <!-- Both Doctor Lilian Kathomi AND Reception can register patients! -->
+        <button class="btn btn-primary" id="openIntakeBtn">
+          <span>+</span> New Patient Intake
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Outpatient Workspace -->
+  <main class="main-wrapper">
+    
+    <!-- Dynamic Portal Context Banner (Reception vs Specialist Lilian Kathomi) -->
+    <section class="portal-banner" id="portalBanner">
+      <div class="portal-banner-text">
+        <h2 id="portalTitle">
+          <span>🩺</span> <span id="portalTitleText">Lilian Kathomi's Consultation Suite</span>
+        </h2>
+        <p id="portalSubtitle">Pediatric Nutrition & Outpatient Consultation Suite • Showing patients scheduled for Lilian Kathomi</p>
+      </div>
+
+      <!-- Scope Switcher for Doctor: [ My Scheduled (X) ] vs [ All Patients (Y) ] -->
+      <div class="scope-toggle-group" id="scopeToggleGroup">
+        <button class="scope-toggle-btn active" id="btnScopeMyPatients">
+          👤 Scheduled for Lilian (<span id="scopeMyCount">0</span>)
+        </button>
+        <button class="scope-toggle-btn" id="btnScopeAllPatients">
+          🏥 All Registered Patients (<span id="scopeAllCount">0</span>)
+        </button>
+      </div>
+    </section>
+
+    <!-- Top KPI Stats Grid -->
+    <section class="stats-grid" aria-label="Clinical Metrics Overview">
+      <div class="stat-card">
+        <div class="stat-info">
+          <span class="stat-label">Scheduled Patients</span>
+          <span class="stat-value" id="statTotalPatients">0</span>
+          <span class="stat-subtext" id="statQueueSubtitle">Current active roster</span>
+        </div>
+        <div class="stat-icon primary">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <span class="stat-label">Completed Consults</span>
+          <span class="stat-value" id="statTodayCompleted">0</span>
+          <span class="stat-subtext">Reviewed today</span>
+        </div>
+        <div class="stat-icon success">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <span class="stat-label">Malnutrition Alert (MUAC &lt; 12.5)</span>
+          <span class="stat-value" id="statHighRiskMUAC" style="color: var(--danger);">0</span>
+          <span class="stat-subtext">SAM / MAM triage cases</span>
+        </div>
+        <div class="stat-icon danger">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <span class="stat-label">Known Food Allergies</span>
+          <span class="stat-value" id="statAllergiesAlert" style="color: var(--warning);">0</span>
+          <span class="stat-subtext">CMPA, Egg, Peanut risk</span>
+        </div>
+        <div class="stat-icon secondary">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <span class="stat-label">Outpatient Revenue</span>
+          <span class="stat-value" id="statBillingBreakdown" style="font-size: 1.25rem;">$0 / $0</span>
+          <span class="stat-subtext">Cash vs Insurance claims</span>
+        </div>
+        <div class="stat-icon purple">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls & Filters Toolbar -->
+    <section class="toolbar-section" aria-label="Filters and Sorting">
+      <div class="filter-group">
+        <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-right:0.25rem;">FILTER:</span>
+        <button class="filter-btn active" data-filter="all">All in View</button>
+        <button class="filter-btn danger-filter" data-filter="allergies">⚠️ Food Allergies</button>
+        <button class="filter-btn danger-filter" data-filter="muac-risk">🔴 Malnutrition (MUAC &lt; 12.5)</button>
+        <button class="filter-btn" data-filter="preterm">👶 Preterm Ex-Preemies</button>
+        <button class="filter-btn" data-filter="exclusive-bf">🍼 Exclusive BF</button>
+        <button class="filter-btn" data-filter="mixed-bf">🥣 Mixed / Partial</button>
+        <button class="filter-btn" data-filter="weaned">🥗 Weaned / Solids</button>
+        <button class="filter-btn" data-filter="cash">💵 Cash Paid</button>
+        <button class="filter-btn" data-filter="insurance">🛡️ Insurance</button>
+      </div>
+
+      <div class="toolbar-actions">
+        <button class="btn btn-secondary btn-sm" id="resetDemoBtn2" title="Reset dataset to clinical demo cases">
+          🔄 Reset Demo
+        </button>
+      </div>
+    </section>
+
+    <!-- Outpatient Registry Queue Header -->
+    <div class="queue-header">
+      <div class="queue-title">
+        <span id="queueSectionTitle">Scheduled Outpatient Consultations</span>
+        <span class="patient-count-badge" id="patientCountBadge">0 Patients</span>
+      </div>
+    </div>
+
+    <!-- Patient Cards Grid -->
+    <section class="patient-grid" id="patientGrid" aria-label="Patient Registry">
+      <!-- Dynamically Rendered by js/app.js -->
+    </section>
+
+  </main>
+
+  <!-- ========================================================
+       MODAL 1: Patient Intake & Consultation Form
+       (Accessible by both Reception AND Specialist Lilian Kathomi)
+       ======================================================== -->
+  <div class="modal-overlay" id="intakeModal" role="dialog" aria-modal="true" aria-labelledby="intakeModalTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="intakeModalTitle">
+          <span>🩺</span> Patient Intake & Consultation Scheduling
+        </h2>
+        <button class="modal-close-btn" id="closeIntakeBtn" aria-label="Close modal">✕</button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="intakeForm">
+          
+          <!-- Section 0: Specialist Assignment & Appointment Routing -->
+          <div class="form-section-title">
+            <span>🏥</span> Consultation Routing & Specialist
+          </div>
+
+          <div class="form-grid-3" style="background:var(--bg-subtle); padding:0.85rem; border-radius:var(--radius-md); border:1px solid var(--border-color); margin-bottom:1.25rem;">
+            <div class="form-group" style="grid-column: span 2;">
+              <label class="form-label" for="assignedSpecialist">Attending Specialist <span class="req">*</span></label>
+              <select id="assignedSpecialist" class="form-select" required>
+                <option value="spec-lilian" selected>Lilian Kathomi — Pediatric Nutritionist & Specialist</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="appointmentTime">Scheduled Time Slot <span class="req">*</span></label>
+              <input type="text" id="appointmentTime" class="form-input" placeholder="e.g. 10:30 AM" value="10:00 AM" required>
+            </div>
+          </div>
+
+          <!-- Section 1: Demographics & Gestational History -->
+          <div class="form-section-title">
+            <span>👤</span> 1. Patient Demographics & Birth History
+          </div>
+          
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label" for="patientName">Patient Full Name <span class="req">*</span></label>
+              <input type="text" id="patientName" class="form-input" placeholder="e.g. Baby Liam Mwangi" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="patientSex">Sex <span class="req">*</span></label>
+              <select id="patientSex" class="form-select" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="patientAge">Chronological Age <span class="req">*</span></label>
+              <input type="text" id="patientAge" class="form-input" placeholder="e.g. 5 months or 18 months" required>
+            </div>
+          </div>
+
+          <!-- Gestational History / Preterm Checkbox -->
+          <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.75rem 1rem; margin-bottom: 1.25rem;">
+            <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.875rem; font-weight:600; cursor:pointer;">
+              <input type="checkbox" id="patientIsPreterm" style="width:18px; height:18px; accent-color:var(--primary);">
+              <span>Patient was born Preterm (&lt; 37 weeks gestation)</span>
+            </label>
+            <div id="pretermDetailsRow" style="display:none; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 0.75rem;">
+              <div class="form-group">
+                <label class="form-label" for="patientGestationalWeeks">Gestational Weeks at Birth</label>
+                <input type="number" step="1" id="patientGestationalWeeks" class="form-input" placeholder="e.g. 34 (weeks)" min="24" max="36">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="patientCorrectedAge">Calculated Corrected Age (For Growth & Feeding)</label>
+                <input type="text" id="patientCorrectedAge" class="form-input" placeholder="e.g. 3.5 months (Corrected)" readonly style="background:var(--bg-surface);">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Clinical Safety (Allergies & Current Meds) -->
+          <div class="form-section-title" style="color: var(--danger);">
+            <span>⚠️</span> 2. Patient Safety: Food Allergies & Current Medications
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="patientAllergies">Known Food Allergies & Intolerances <span class="req">*</span></label>
+            <input type="text" id="patientAllergies" class="form-input" placeholder="e.g. Cow's Milk Protein (CMPA), Egg Whites, Peanuts, or 'No Known Allergies'" required>
+            <div class="preset-chips">
+              <span class="preset-chip chip-allergy" data-val="Cow's Milk Protein (CMPA)">+ Cow's Milk Protein (CMPA)</span>
+              <span class="preset-chip chip-allergy" data-val="Egg Whites">+ Egg Whites</span>
+              <span class="preset-chip chip-allergy" data-val="Peanuts">+ Peanuts</span>
+              <span class="preset-chip chip-allergy" data-val="Gluten / Celiac">+ Gluten</span>
+              <span class="preset-chip chip-allergy" data-val="Soy Protein">+ Soy</span>
+              <span class="preset-chip chip-allergy" data-val="No known food allergies (NKFA)">+ None (NKFA)</span>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="patientCurrentMeds">Current Medications & Micronutrient Supplements</label>
+            <input type="text" id="patientCurrentMeds" class="form-input" placeholder="e.g. Vitamin D3 (400 IU/day), Ferrous sulfate iron drops, Zinc syrup, or 'None'">
+          </div>
+
+          <!-- Section 3: Pediatric Anthropometry & Triage -->
+          <div class="form-section-title">
+            <span>📏</span> 3. Pediatric Anthropometry & Triage
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label" for="patientWeight">Current Weight (kg) <span class="req">*</span></label>
+              <input type="number" step="0.05" id="patientWeight" class="form-input" placeholder="e.g. 5.9" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="patientHeight">Height / Length (cm) <span class="req">*</span></label>
+              <input type="number" step="0.5" id="patientHeight" class="form-input" placeholder="e.g. 62.5" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="patientBirthWeight">Birth Weight (kg)</label>
+              <input type="number" step="0.05" id="patientBirthWeight" class="form-input" placeholder="e.g. 3.3">
+            </div>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label" for="patientMUAC">MUAC (cm) - Malnutrition Triage</label>
+              <input type="number" step="0.1" id="patientMUAC" class="form-input" placeholder="e.g. 12.8">
+              <span id="muacTriageTag" style="font-size:0.75rem; font-weight:700; margin-top:0.25rem; display:none;"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="patientHeadCirc">Head Circumference (cm)</label>
+              <input type="number" step="0.1" id="patientHeadCirc" class="form-input" placeholder="e.g. 41.5 (OFC)">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="patientEdema">Bilateral Pitting Edema</label>
+              <select id="patientEdema" class="form-select">
+                <option value="None">None (Normal)</option>
+                <option value="Grade + (Mild Feet/Ankles)">Grade + (Mild Feet/Ankles)</option>
+                <option value="Grade ++ (Moderate Legs/Hands)">Grade ++ (Moderate Legs/Hands)</option>
+                <option value="Grade +++ (Generalized / Kwashiorkor)">Grade +++ (Kwashiorkor Alert)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" for="breastfeedingStatus">Breastfeeding & Feeding Status <span class="req">*</span></label>
+            <select id="breastfeedingStatus" class="form-select" required>
+              <option value="Exclusive Breastfeeding (0-6m)">Exclusive Breastfeeding (0-6m)</option>
+              <option value="Predominant Breastfeeding">Predominant Breastfeeding</option>
+              <option value="Mixed / Partial Breastfeeding">Mixed / Partial Breastfeeding (Breast + Formula)</option>
+              <option value="Formula Fed">Formula Fed (Infant formula only)</option>
+              <option value="Weaned / Complementary Foods">Weaned / Complementary Foods (Solid foods introduced)</option>
+              <option value="Not Applicable">Not Applicable</option>
+            </select>
+          </div>
+
+          <!-- Live Growth Insight Banner -->
+          <div class="growth-insight-banner" id="growthInsightBanner" style="display: none; margin-bottom: 1.25rem;">
+            <div class="growth-insight-text">
+              <strong id="growthGainText">Weight Gain: +0 kg</strong>
+            </div>
+            <span class="growth-badge" id="growthStatusBadge">Adequate Growth</span>
+          </div>
+
+          <!-- Section 4: Dietary Assessment (Recall & 8 Food Groups) -->
+          <div class="form-section-title">
+            <span>🥣</span> 4. Dietary Assessment & Food Diversity (MDD-C)
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="dailyMilkVolume">Daily Milk / Formula Volume (ml)</label>
+              <input type="number" step="50" id="dailyMilkVolume" class="form-input" placeholder="e.g. 400 (Alert if > 500ml cow milk)">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="dailyFluidIntake">Daily Fluid / Water Intake (ml)</label>
+              <input type="number" step="50" id="dailyFluidIntake" class="form-input" placeholder="e.g. 800">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label class="form-label">Minimum Dietary Diversity (MDD-C 8 Food Groups)</label>
+              <span id="mddScoreDisplay" style="font-size:0.8rem; font-weight:700; color:var(--primary);">Score: 0 / 8</span>
+            </div>
+            <div class="food-groups-checklist">
+              <label class="fg-item"><input type="checkbox" name="foodGroup" value="Breastmilk"> 🍼 1. Breastmilk</label>
+              <label class="fg-item"><input type="checkbox" name="foodGroup" value="Grains & Tubers"> 🌾 2. Grains, roots, tubers</label>
+              <label class="fg-item"><input type="checkbox" name="foodGroup" value="Pulses & Nuts"> 🥜 3. Legumes, beans, nuts</label>
+              <label class="fg-item"><input type="checkbox" name="foodGroup" value="Dairy"> 🧀 4. Dairy (milk, formula, yogurt)</label>
+              <label class="fg-item"><input type="checkbox" name="foodGroup" value="Flesh Foods"> 🍗 5. Flesh foods (meat, fish, liver)</label>
+              <label class="fg-item"><input type="checkbox" name="foodGroup" value="Eggs"> 🥚 6. Eggs</label>
+              <label class="fg-item"><input type="checkbox" name="foodGroup" value="Vit-A Fruits/Veg"> 🥕 7. Vit-A rich fruits & veg (papaya, pumpkin)</label>
+              <label class="fg-item"><input type="checkbox" name="foodGroup" value="Other Fruits/Veg"> 🍎 8. Other fruits & vegetables</label>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="feedingDifficultiesInput">Feeding Difficulties & Red Flags</label>
+            <input type="text" id="feedingDifficultiesInput" class="form-input" placeholder="e.g. Poor latch, Textural solid food refusal, GERD regurgitation, Constipation">
+          </div>
+
+          <!-- Section 5: Parent / Guardian Details -->
+          <div class="form-section-title">
+            <span>👨‍👩‍👧</span> 5. Parent / Guardian Contact
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label" for="guardianName">Guardian Full Name <span class="req">*</span></label>
+              <input type="text" id="guardianName" class="form-input" placeholder="e.g. Grace W. Mwangi" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="guardianRelationship">Relationship <span class="req">*</span></label>
+              <select id="guardianRelationship" class="form-select" required>
+                <option value="Mother">Mother</option>
+                <option value="Father">Father</option>
+                <option value="Grandmother">Grandmother</option>
+                <option value="Legal Guardian">Legal Guardian</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="guardianPhone">Contact Phone <span class="req">*</span></label>
+              <input type="tel" id="guardianPhone" class="form-input" placeholder="e.g. +254 712 984 521" required>
+            </div>
+          </div>
+
+          <!-- Section 6: Nutritionist Notes & Clinical Care Plan -->
+          <div class="form-section-title">
+            <span>📋</span> 6. Nutritionist Notes & Clinical Care Plan
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label" for="visitDate">Consultation Date</label>
+              <input type="date" id="visitDate" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="visitTime">Time</label>
+              <input type="text" id="visitTime" class="form-input" placeholder="09:15 AM">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="nutritionistName">Nutritionist / Attending</label>
+              <input type="text" id="nutritionistName" class="form-input" value="Lilian Kathomi">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="patientSummary">Patient Clinical Summary & Conditions</label>
+            <textarea id="patientSummary" class="form-textarea" placeholder="Detailed presentation, feeding recall, clinical symptoms, gastrointestinal signs..."></textarea>
+            
+            <div class="preset-chips">
+              <span class="preset-chip" data-text="Infant Growth Faltering" data-mgmt="1. Latch optimization in clinic. 2. Increase feeding frequency to 8-10x/24h. 3. Wet diaper tracking (target >=6/day).">⚡ Growth Faltering</span>
+              <span class="preset-chip" data-text="Suspected CMPA Allergy" data-mgmt="1. Cease cow milk formula. Switch to Extensively Hydrolyzed Formula (eHF). 2. Strict maternal dairy elimination.">⚡ CMPA Milk Allergy</span>
+              <span class="preset-chip" data-text="Toddler Picky Eating & Anemia" data-mgmt="1. Cap cow milk strictly to 350ml/day. 2. Prescribe elemental iron drops with Vitamin C. 3. Food chaining for textured solids.">⚡ Picky Eater & Anemia</span>
+              <span class="preset-chip" data-text="Moderate Acute Malnutrition (MAM)" data-mgmt="1. Supplementary feeding (RUSF 1 sachet daily). 2. High-calorie nutrient-dense home mash. 3. Weekly weight check.">⚡ MAM Supplementary Feed</span>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="conditionDiagnosed">Condition Diagnosed / Nutritional Assessment</label>
+            <input type="text" id="conditionDiagnosed" class="form-input" placeholder="e.g. Mild Infant Growth Faltering secondary to suboptimal latch duration">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="recommendedManagement">Recommended Management & Dietary Care Plan <span class="req">*</span></label>
+            <textarea id="recommendedManagement" class="form-textarea" placeholder="Step-by-step feeding schedule, caloric supplementation, maternal diet advice, weaning guidance..." required></textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="followUpDate">Scheduled Follow-Up Appointment</label>
+            <input type="date" id="followUpDate" class="form-input">
+          </div>
+
+          <!-- Section 7: Prescriptions & Supplements -->
+          <div class="form-section-title">
+            <span>💊</span> 7. Prescribed Micronutrients & Therapeutic Formularies
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label" for="rxItemName">Prescription / Supplement</label>
+              <input type="text" id="rxItemName" class="form-input" placeholder="e.g. Elemental Iron Drops (Ferrous)">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="rxDosage">Dosage & Instructions</label>
+              <input type="text" id="rxDosage" class="form-input" placeholder="e.g. 3 mg/kg/day with Vit C">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="rxDuration">Duration</label>
+              <input type="text" id="rxDuration" class="form-input" placeholder="e.g. 8 weeks">
+            </div>
+          </div>
+
+          <!-- Section 8: Attachments -->
+          <div class="form-section-title">
+            <span>📎</span> 8. Medical & Nutrition Attachments
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.75rem;">
+            <label class="form-label" for="attachmentCategorySelect">Document Category</label>
+            <select id="attachmentCategorySelect" class="form-select">
+              <option value="Growth Chart">Growth Chart (WHO / CDC Curves)</option>
+              <option value="Lab Report">Lab Report (CBC, Stool Occult, Ferritin, Allergy Panel)</option>
+              <option value="Dietary Diary">Dietary Recall / Feeding Log</option>
+              <option value="Referral Letter">Physician Referral Letter</option>
+              <option value="Prescription">Prescription / Supplement Form</option>
+            </select>
+          </div>
+
+          <div class="upload-dropzone" id="attachmentDropzone">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            <div class="dropzone-text">Click to browse or drop medical & nutrition files here</div>
+            <div class="dropzone-subtext">Supports PDF reports, JPEG/PNG growth charts, lab panels (Simulated upload)</div>
+            <input type="file" id="attachmentFileInput" style="display:none;" multiple>
+          </div>
+
+          <div class="uploaded-files-list" id="uploadedFilesList"></div>
+
+          <!-- Section 9: Itemized Outpatient Billing -->
+          <div class="form-section-title" style="margin-top: 1.25rem;">
+            <span>💳</span> 9. Itemized Outpatient Billing & ICD-10 Coding
+          </div>
+
+          <input type="hidden" id="paymentMode" value="Cash">
+
+          <div class="segmented-control">
+            <button type="button" class="segment-btn active" id="btnPaymentCash">
+              <span>💵</span> Cash Payment
+            </button>
+            <button type="button" class="segment-btn" id="btnPaymentInsurance">
+              <span>🛡️</span> Insurance Billing
+            </button>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" for="icd10Code">Diagnostic Coding (ICD-10)</label>
+            <select id="icd10Code" class="form-select">
+              <option value="E45 - Retardation of development following protein-calorie malnutrition">E45 - Growth faltering / protein-calorie retardation</option>
+              <option value="E44.0 - Moderate protein-calorie malnutrition">E44.0 - Moderate protein-calorie malnutrition (MAM)</option>
+              <option value="D50.9 - Iron deficiency anemia, unspecified">D50.9 - Toddler Nutritional Iron deficiency anemia</option>
+              <option value="K52.2 - Allergic and dietetic gastroenteritis and colitis (CMPA)">K52.2 - Allergic colitis (CMPA Cow's milk protein allergy)</option>
+              <option value="Z76.2 - Health supervision and care of other healthy infant and child">Z76.2 - Routine healthy pediatric growth supervision</option>
+            </select>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label" for="consultationFee">Consultation Fee ($ USD)</label>
+              <input type="number" step="1" id="consultationFee" class="form-input" value="40">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="supplementsFee">Supplements / Food Fee ($ USD)</label>
+              <input type="number" step="1" id="supplementsFee" class="form-input" value="15">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Total Outpatient Bill</label>
+              <input type="text" id="totalBillDisplay" class="form-input" value="$55.00 USD" readonly style="font-weight:700; color:var(--primary); background:var(--bg-subtle);">
+            </div>
+          </div>
+
+          <div class="form-grid-3" id="insuranceFieldsGroup" style="display: none; margin-top: 0.5rem;">
+            <div class="form-group">
+              <label class="form-label" for="insuranceProvider">Insurance Provider</label>
+              <input type="text" id="insuranceProvider" class="form-input" placeholder="e.g. Jubilee / Aetna / Cigna">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="insurancePolicyNumber">Policy / Member No.</label>
+              <input type="text" id="insurancePolicyNumber" class="form-input" placeholder="e.g. JUB-883921-PED">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="insuranceAuthCode">Pre-Auth Code</label>
+              <input type="text" id="insuranceAuthCode" class="form-input" placeholder="e.g. AUTH-2026-9041">
+            </div>
+          </div>
+
+          <div class="modal-footer" style="padding: 1.25rem 0 0 0; margin-top: 1rem;">
+            <button type="button" class="btn btn-secondary" id="cancelIntakeBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="savePatientBtn">
+              💾 Save Patient & Schedule for Lilian Kathomi
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 2: Full Clinical Patient Chart / Dossier Modal
+       ======================================================== -->
+  <div class="modal-overlay" id="chartModal" role="dialog" aria-modal="true" aria-labelledby="chartPatientName">
+    <div class="modal-box" style="max-width: 960px;">
+      
+      <!-- Formal Medical Printable Header (For window.print) -->
+      <div class="print-only-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2 style="font-size: 1.4rem; color: #000; margin-bottom: 0.2rem;">NUTRICARE PEDIATRIC & CLINICAL NUTRITION CENTER</h2>
+            <p style="font-size: 0.85rem; color: #444;">Outpatient Clinical Consultation Summary, Dietary Care Plan & Prescription</p>
+            <p style="font-size: 0.78rem; color: #666;">Attending Specialist: Lilian Kathomi, RDN | Tel: +254 700 000 000 | outpatient@nutricare.med</p>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1rem; font-weight: bold;" id="printMRN">MRN: NP-2026-000</div>
+            <div style="font-size: 0.82rem;" id="printDate">Date: 2026-10-26</div>
+          </div>
+        </div>
+        <div style="margin-top: 0.85rem; border-top: 1px solid #000; padding-top: 0.6rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; font-size: 0.82rem;">
+          <div><strong>Patient:</strong> <span id="printPatientName">--</span></div>
+          <div><strong>Age / Sex:</strong> <span id="printAgeSex">--</span></div>
+          <div><strong>Guardian:</strong> <span id="printGuardianInfo">--</span></div>
+          <div><strong>Attending Specialist:</strong> <span id="printDoctorName">Lilian Kathomi</span></div>
+          <div style="grid-column: 1 / -1;"><strong>Vitals & Anthropometry:</strong> <span id="printVitalsSummary">--</span></div>
+          <div style="grid-column: 1 / -1; color: #b91c1c;"><strong>Allergies / Alerts:</strong> <span id="printAllergies">--</span></div>
+        </div>
+      </div>
+
+      <!-- Hero Header -->
+      <div class="chart-hero">
+        <div class="chart-hero-left">
+          <div class="chart-avatar" id="chartAvatar">LM</div>
+          <div>
+            <h3 class="chart-name-title" id="chartPatientName">Baby Liam Mwangi</h3>
+            <div class="patient-meta-row" style="font-size: 0.85rem; margin-top: 0.3rem;">
+              <span id="chartMRN" style="font-weight: 700; color: var(--primary);">NP-2026-001</span>
+              <span>•</span>
+              <span id="chartAge">5 months</span>
+              <span id="chartPretermBadge" class="badge-preterm" style="display:none;">Ex-Preemie</span>
+              <span>•</span>
+              <span id="chartSex">Male</span>
+              <span>•</span>
+              <span class="status-chip completed" id="chartStatusBadge">Completed</span>
+              <span>•</span>
+              <span class="assigned-doctor-chip" id="chartAssignedDoctorChip">Lilian Kathomi</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <button class="btn btn-outline btn-sm btn-no-print" id="openFollowUpBtn" title="Log a new consultation visit for this patient">
+            + Log Follow-up Visit
+          </button>
+          <button class="modal-close-btn" id="closeChartBtn" aria-label="Close chart">✕</button>
+        </div>
+      </div>
+
+      <!-- High-Visibility Allergy Warning Banner in Chart -->
+      <div id="chartAllergyBanner" class="allergy-alert-chip" style="margin: 0.85rem 1.75rem 0 1.75rem; font-size:0.85rem; padding:0.5rem 1rem;">
+        <span>⚠️</span> <span>ALLERGY WARNING:</span> <strong id="chartAllergiesText">None</strong>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <nav class="chart-tabs-nav" aria-label="Patient Chart Tabs">
+        <button class="chart-tab-btn active" data-tab="vitalsTab">📊 Anthropometry & Triage</button>
+        <button class="chart-tab-btn" data-tab="timelineTab">📈 Multi-Visit Velocity</button>
+        <button class="chart-tab-btn" data-tab="dietTab">🥣 Food Diversity (MDD-C)</button>
+        <button class="chart-tab-btn" data-tab="rxTab">💊 Prescriptions & Care Plan</button>
+        <button class="chart-tab-btn" data-tab="attachmentsTab">📎 Records & Attachments</button>
+        <button class="chart-tab-btn" data-tab="billingTab">💳 Itemized Billing</button>
+      </nav>
+
+      <div class="modal-body">
+        
+        <!-- Tab 1: Vitals & Pediatric Anthropometry -->
+        <div class="chart-tab-content active" id="vitalsTab">
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="stat-card" style="padding: 1rem;">
+              <div class="stat-info">
+                <span class="stat-label">Current Weight</span>
+                <span class="stat-value" id="chartCurrentWeight" style="font-size: 1.4rem;">--</span>
+                <span class="stat-subtext" id="chartWeightGain" style="color:var(--success); font-weight:700;">--</span>
+              </div>
+            </div>
+            <div class="stat-card" style="padding: 1rem;">
+              <div class="stat-info">
+                <span class="stat-label">Height / Length</span>
+                <span class="stat-value" id="chartHeight" style="font-size: 1.4rem;">--</span>
+                <span class="stat-subtext">Supine length</span>
+              </div>
+            </div>
+            <div class="stat-card" style="padding: 1rem;">
+              <div class="stat-info">
+                <span class="stat-label">MUAC Triage</span>
+                <span class="stat-value" id="chartMUAC" style="font-size: 1.4rem;">--</span>
+                <span class="stat-subtext" id="chartMUACBadge">Normal</span>
+              </div>
+            </div>
+            <div class="stat-card" style="padding: 1rem;">
+              <div class="stat-info">
+                <span class="stat-label">Head Circumference</span>
+                <span class="stat-value" id="chartHeadCirc" style="font-size: 1.4rem;">--</span>
+                <span class="stat-subtext">Cranial OFC</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
+            <div class="timeline-card">
+              <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Infant Feeding Profile & Edema</h4>
+              <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.25rem;">🍼</span>
+                <strong id="chartBreastfeedingStatus" style="font-size: 0.95rem;">--</strong>
+              </div>
+              <div style="display:flex; align-items:center; gap:0.5rem; font-size: 0.8125rem;">
+                <span>Nutritional Edema:</span>
+                <strong id="chartEdemaStatus" style="color:var(--text-main);">None</strong>
+              </div>
+            </div>
+
+            <div class="timeline-card">
+              <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Parent / Guardian Emergency Contact</h4>
+              <div style="font-size: 0.8125rem; display:flex; flex-direction:column; gap:0.25rem;">
+                <div><strong>Name:</strong> <span id="chartGuardianName">--</span> (<span id="chartGuardianRel">--</span>)</div>
+                <div><strong>Phone:</strong> <span id="chartGuardianPhone" style="color:var(--primary); font-weight:700;">--</span></div>
+                <div><strong>Email:</strong> <span id="chartGuardianEmail">--</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Longitudinal Visits & Weight Velocity -->
+        <div class="chart-tab-content" id="timelineTab">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">
+              Longitudinal tracking of visits with Lilian Kathomi and growth velocity (grams gained per day).
+            </p>
+            <button class="btn btn-primary btn-sm btn-no-print" id="timelineAddVisitBtn">
+              + Record Follow-up Visit
+            </button>
+          </div>
+          <div id="chartVisitsTimelineList">
+            <!-- Rendered by js/app.js -->
+          </div>
+        </div>
+
+        <!-- Tab 3: Dietary Diversity (MDD-C 8 Food Groups) -->
+        <div class="chart-tab-content" id="dietTab">
+          <div class="timeline-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem;">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--primary);">Minimum Dietary Diversity (MDD-C Scorecard)</h4>
+              <span id="chartMDDScoreBadge" class="status-chip completed" style="font-size:0.8rem;">Score: 0 / 8</span>
+            </div>
+            <p style="font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              WHO standard for Infant and Young Child Feeding (IYCF). Children consuming >= 5 out of 8 food groups have significantly higher micronutrient adequacy.
+            </p>
+            <div id="chartFoodGroupsList" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 1rem;">
+              <!-- Rendered by js/app.js -->
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; border-top:1px dashed var(--border-color); padding-top:0.75rem;">
+              <div>
+                <span style="font-size:0.75rem; color:var(--text-muted); display:block;">Daily Milk / Formula Volume:</span>
+                <strong id="chartMilkVolumeDisplay" style="font-size:0.95rem;">-- ml</strong>
+              </div>
+              <div>
+                <span style="font-size:0.75rem; color:var(--text-muted); display:block;">Feeding Difficulties:</span>
+                <strong id="chartFeedingDifficultiesDisplay" style="font-size:0.85rem;">--</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Prescriptions & Therapeutic Care Plan -->
+        <div class="chart-tab-content" id="rxTab">
+          <div class="timeline-card">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Prescribed Therapeutic Formularies & Supplements</h4>
+            <div id="chartPrescriptionsContainer">
+              <!-- Rendered by js/app.js -->
+            </div>
+          </div>
+          <div class="timeline-card">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Latest Prescribed Dietary Management Plan</h4>
+            <div id="chartLatestManagementPlan" class="timeline-text" style="background:var(--primary-light); padding:1rem; border-radius:var(--radius-md); border-left:4px solid var(--primary);">
+              --
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 5: Records & Attachments -->
+        <div class="chart-tab-content" id="attachmentsTab">
+          <div class="uploaded-files-list" id="chartAttachmentsList">
+            <!-- Rendered by js/app.js -->
+          </div>
+        </div>
+
+        <!-- Tab 6: Itemized Billing & ICD-10 -->
+        <div class="chart-tab-content" id="billingTab">
+          <div id="chartBillingDetails">
+            <!-- Rendered by js/app.js -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Printable Doctor Signature Block -->
+      <div class="print-only-signature">
+        <div style="flex:1;">
+          <p><strong>Clinical Condition Diagnosed:</strong> <span id="printDiagnosisSummary">--</span></p>
+          <p style="margin-top: 0.4rem;"><strong>Recommended Dietary Management & Prescriptions:</strong></p>
+          <div id="printManagementSummary" style="margin-top: 0.2rem; white-space: pre-line; font-size: 0.8rem;">--</div>
+          <p style="margin-top: 0.6rem;"><strong>Scheduled Follow-Up:</strong> <span id="printFollowUpSummary">--</span></p>
+        </div>
+        <div style="text-align: right; width: 220px;">
+          <div style="width: 180px; border-bottom: 1px solid #000; margin-left: auto; margin-top: 2rem;"></div>
+          <p style="font-size: 0.75rem; margin-top: 0.3rem;">Lilian Kathomi, RDN<br>Pediatric Nutrition Specialist</p>
+        </div>
+      </div>
+
+      <div class="modal-footer btn-no-print">
+        <button class="btn btn-secondary" id="openReferralBtn">
+          📨 Specialist Referral Letter
+        </button>
+        <button class="btn btn-primary" id="printSummaryBtn">
+          🖨️ Print Consultation Slip / Diet Sheet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 3: Log Follow-up Encounter Modal
+       ======================================================== -->
+  <div class="modal-overlay" id="followUpModal" role="dialog" aria-modal="true" aria-labelledby="followUpModalTitle">
+    <div class="modal-box" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 id="followUpModalTitle">
+          <span>📈</span> Log Follow-up Consultation with Lilian Kathomi
+        </h3>
+        <button class="modal-close-btn" id="closeFollowUpBtn" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="followUpForm">
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label" for="fuVisitDate">Visit Date</label>
+              <input type="date" id="fuVisitDate" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fuWeight">Weight (kg) <span class="req">*</span></label>
+              <input type="number" step="0.05" id="fuWeight" class="form-input" placeholder="e.g. 6.2" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fuHeight">Height (cm)</label>
+              <input type="number" step="0.5" id="fuHeight" class="form-input" placeholder="e.g. 64.0">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="fuMUAC">MUAC (cm)</label>
+              <input type="number" step="0.1" id="fuMUAC" class="form-input" placeholder="e.g. 13.0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fuFollowUpDate">Next Follow-Up</label>
+              <input type="date" id="fuFollowUpDate" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="fuSummary">Follow-up Clinical Progress Note</label>
+            <textarea id="fuSummary" class="form-textarea" placeholder="Report on dietary compliance, weight progress, stool changes, tolerance of formula/solids..." required></textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="fuManagement">Updated Recommended Management</label>
+            <textarea id="fuManagement" class="form-textarea" placeholder="Adjusted feeding instructions, continued supplement dosing, weaning progress..." required></textarea>
+          </div>
+
+          <div class="modal-footer" style="padding: 1rem 0 0 0;">
+            <button type="button" class="btn btn-secondary" id="cancelFollowUpBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Follow-up Encounter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 4: Specialist Clinical Referral Letter
+       ======================================================== -->
+  <div class="modal-overlay" id="referralModal" role="dialog" aria-modal="true" aria-labelledby="referralModalTitle">
+    <div class="modal-box" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 id="referralModalTitle">
+          <span>📨</span> Specialist Referral Letter Generator
+        </h3>
+        <button class="modal-close-btn" id="closeReferralBtn" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label" for="referralSpecialistSelect">Referral Department / Specialist</label>
+          <select id="referralSpecialistSelect" class="form-select">
+            <option value="Pediatric Gastroenterologist">Pediatric Gastroenterologist (CMPA, Malabsorption, Reflux)</option>
+            <option value="Pediatric Allergist & Immunologist">Pediatric Allergist & Immunologist (Severe Anaphylaxis/Eczema)</option>
+            <option value="Pediatrician / Hospital Triage">Pediatrician / Hospital Inpatient Triage (SAM with Complications)</option>
+            <option value="Pediatric Speech & Feeding Therapist">Pediatric Speech & Feeding Therapist (Dysphagia/Swallowing)</option>
+          </select>
+        </div>
+        <div class="referral-letter-box" id="referralLetterContent">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="copyReferralBtn">📋 Copy Letter Text</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print Referral Letter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 5: Simulated Document Viewer (Attachment Preview)
+       ======================================================== -->
+  <div class="modal-overlay" id="docViewerModal" role="dialog" aria-modal="true" aria-labelledby="docViewerTitle">
+    <div class="modal-box" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 id="docViewerTitle" style="font-size: 1.1rem; display:flex; align-items:center; gap:0.5rem;">
+          <span>📄</span> Document Audit
+        </h3>
+        <button class="modal-close-btn" id="closeDocViewerBtn" aria-label="Close document viewer">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+          <span class="file-badge" id="docViewerBadge">Growth Chart</span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Verified Medical Attachment</span>
+        </div>
+        <pre class="preview-card-box" id="docViewerContent"></pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="docDownloadBtn">⬇️ Download Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Application Logic (ES Module) -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
