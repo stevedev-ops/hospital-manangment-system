@@ -47,3 +47,27 @@ PORT=3030 npm start
 # or
 python3 -m http.server 3030
 ```
+
+---
+
+## 🚀 Hosting on Vercel
+
+The repository is pre-configured with `vercel.json` for zero-configuration static edge deployment.
+
+### Method 1: Connect via Vercel Dashboard (Recommended)
+1. Go to [vercel.com/new](https://vercel.com/new).
+2. Sign in with GitHub and select repository **`stevedev-ops/hospital-manangment-system`**.
+3. Under **Framework Preset**, select **Other**.
+4. The pre-configured `vercel.json` will automatically configure:
+   - Build Command: *(empty / none needed)*
+   - Output Directory: `./` (root)
+5. Click **Deploy**. Your app will be live with a production HTTPS URL and continuous deployment on every git push!
+
+### Method 2: Deploy using Vercel CLI
+```bash
+# 1. Login to Vercel
+npx vercel login
+
+# 2. Deploy to production
+npx vercel --prod
+```
