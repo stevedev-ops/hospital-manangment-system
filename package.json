@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "serve": "python3 -m http.server 3000"
+    "serve": "python3 -m http.server 3000",
+    "build": "echo 'Static build ready'"
   },
   "keywords": [
     "pediatric",
