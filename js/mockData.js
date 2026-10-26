@@ -8,7 +8,8 @@ export const CLINICAL_USERS = [
     role: "reception",
     roleTitle: "Front Desk & Triage Officer",
     avatar: "RD",
-    department: "Reception & Outpatient Billing"
+    department: "Reception & Outpatient Billing",
+    station: "Main Admissions Desk 01"
   },
   {
     id: "spec-lilian",
@@ -17,7 +18,8 @@ export const CLINICAL_USERS = [
     role: "specialist",
     roleTitle: "Pediatric Nutritionist & Specialist",
     avatar: "LK",
-    department: "Pediatric Nutrition & Outpatient Clinic"
+    department: "Pediatric Nutrition & Outpatient Clinic",
+    station: "Consultation Suite 04 (Pediatric Wing)"
   }
 ];
 

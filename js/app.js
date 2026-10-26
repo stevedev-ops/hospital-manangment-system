@@ -23,7 +23,16 @@ const elements = {
   loginEmail: document.getElementById('loginEmail'),
   roleOptionCards: document.querySelectorAll('.role-option-card'),
   userProfileBtn: document.getElementById('userProfileBtn'),
-  switchUserBtn: document.getElementById('switchUserBtn'),
+  logoutBtn: document.getElementById('logoutBtn'),
+  userProfileModal: document.getElementById('userProfileModal'),
+  closeUserProfileBtn: document.getElementById('closeUserProfileBtn'),
+  cancelUserProfileBtn: document.getElementById('cancelUserProfileBtn'),
+  modalLogoutBtn: document.getElementById('modalLogoutBtn'),
+  modalUserName: document.getElementById('modalUserName'),
+  modalUserRole: document.getElementById('modalUserRole'),
+  modalUserDept: document.getElementById('modalUserDept'),
+  modalUserStation: document.getElementById('modalUserStation'),
+  modalUserAvatar: document.getElementById('modalUserAvatar'),
   navUserAvatar: document.getElementById('navUserAvatar'),
   navUserName: document.getElementById('navUserName'),
   navRoleTag: document.getElementById('navRoleTag'),
@@ -160,7 +169,33 @@ function loginAsUser(userId) {
   specialistScope = 'my';
   applyUserPortal();
   renderDashboard();
-  showToast(`Switched workspace to ${currentUser.name} (${currentUser.roleTitle})`);
+  showToast(`Authenticated as ${currentUser.name} (${currentUser.roleTitle}). Workstation active.`);
+}
+
+
+function handleLogout() {
+  if (typeof closeIntakeModal === 'function') closeIntakeModal();
+  if (typeof closeChartModal === 'function') closeChartModal();
+  if (typeof closeFollowUpModal === 'function') closeFollowUpModal();
+  if (typeof closeReferralModal === 'function') closeReferralModal();
+  if (elements.userProfileModal) elements.userProfileModal.classList.remove('active');
+  
+  elements.loginOverlay.classList.add('active');
+  showToast('Workstation session closed. Logged out successfully.');
+}
+
+function openUserProfileModal() {
+  if (!elements.userProfileModal) return;
+  elements.modalUserName.textContent = currentUser.name;
+  elements.modalUserRole.textContent = currentUser.roleTitle;
+  elements.modalUserDept.textContent = currentUser.department;
+  elements.modalUserStation.textContent = currentUser.station || (currentUser.role === 'reception' ? 'Main Admissions Desk 01' : 'Consultation Suite 04 (Pediatric Wing)');
+  elements.modalUserAvatar.textContent = currentUser.avatar;
+  elements.userProfileModal.classList.add('active');
+}
+
+function closeUserProfileModal() {
+  if (elements.userProfileModal) elements.userProfileModal.classList.remove('active');
 }
 
 function applyUserPortal() {
@@ -212,11 +247,11 @@ function savePatients() {
 }
 
 function resetToDemoData() {
-  if (confirm('Reset patient records to the clinical demo profiles for Lilian Kathomi?')) {
+  if (confirm('Synchronize and refresh the clinical outpatient database with the central clinic server?')) {
     patients = JSON.parse(JSON.stringify(INITIAL_PATIENTS));
     savePatients();
     renderDashboard();
-    showToast('Reset to clinical demo dataset successfully.');
+    showToast('Outpatient registry roster synchronized successfully.');
   }
 }
 
@@ -1319,9 +1354,17 @@ function handleSelectedFiles(fileList) {
 }
 
 function setupEventListeners() {
-  // Login & Role Switcher
-  elements.userProfileBtn.addEventListener('click', () => elements.loginOverlay.classList.add('active'));
-  elements.switchUserBtn.addEventListener('click', () => elements.loginOverlay.classList.add('active'));
+  // Authentication & Workstation Profile
+  if (elements.logoutBtn) elements.logoutBtn.addEventListener('click', handleLogout);
+  if (elements.userProfileBtn) elements.userProfileBtn.addEventListener('click', openUserProfileModal);
+  if (elements.closeUserProfileBtn) elements.closeUserProfileBtn.addEventListener('click', closeUserProfileModal);
+  if (elements.cancelUserProfileBtn) elements.cancelUserProfileBtn.addEventListener('click', closeUserProfileModal);
+  if (elements.modalLogoutBtn) {
+    elements.modalLogoutBtn.addEventListener('click', () => {
+      closeUserProfileModal();
+      handleLogout();
+    });
+  }
 
   elements.roleOptionCards.forEach(card => {
     card.addEventListener('click', () => {

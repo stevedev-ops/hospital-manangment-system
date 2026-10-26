@@ -28,11 +28,14 @@ A clinical **Outpatient Pediatric & Clinical Nutrition Patient Management System
 
 ---
 
-## 🔑 Login & Role Switcher
+## 🔑 Workstation Authentication & Clinical Staff Profiles
 
-Click the **User Badge** or **"🔄 Switch Role"** button in the top navigation bar to switch between:
-1. **Reception Desk**
-2. **Lilian Kathomi** (Pediatric Nutritionist & Specialist)
+The system uses an authentic Hospital EMR workstation authentication flow:
+- **Staff Profile & Status:** Click the active **User Badge** (with online station indicator) in the top navigation bar to inspect the **Clinical Staff Profile** (displaying provider credentials, department, assigned consultation room/desk, and HIPAA session compliance).
+- **Workstation Log Out:** Click the **"🚪 Log Out"** button in the top header or within the staff profile to terminate the active clinical shift and return to the secure portal login.
+- **Authorized Workstations:**
+  1. **Reception Desk** (Main Admissions, Triage & Billing Station 01)
+  2. **Lilian Kathomi** (Lead Pediatric Nutritionist • Consultation Suite 04)
 
 ---
 
