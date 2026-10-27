@@ -88,187 +88,526 @@
     </div>
   </div>
 
-  <!-- Top Sticky Navigation Bar -->
-  <header class="app-header">
-    <div class="header-container">
-      <div class="brand-section">
+  <!-- Main Application Layout (Standalone Sidebar, No Top Navbar) -->
+  <div class="app-layout">
+    <!-- Sidebar Backdrop for Mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
+
+    <!-- Left Standalone Sidebar Navigation -->
+    <aside class="app-sidebar" id="appSidebar">
+      <!-- Sidebar Brand -->
+      <div class="sidebar-brand">
         <div class="brand-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2v20M2 12h20"/>
             <path d="M12 2a7 7 0 0 1 7 7c0 4-7 11-7 11s-7-7-7-11a7 7 0 0 1 7-7z"/>
           </svg>
         </div>
-        <div class="brand-text">
-          <h1>NutriCare <span class="brand-badge">Clinical EMR</span></h1>
-          <span class="brand-subtitle">Pediatric & Clinical Nutrition Outpatient Consultation Center</span>
+        <div class="sidebar-brand-text">
+          <div class="sidebar-brand-title">NutriCare <span class="brand-badge">HIMS</span></div>
+          <div class="sidebar-brand-sub">Clinical Outpatient EMR</div>
         </div>
       </div>
 
-      <!-- Live Search Bar -->
-      <div class="header-search">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-        </svg>
-        <input type="text" id="globalSearchInput" placeholder="Search patient name, MRN, phone, allergy, diagnosis..." aria-label="Search patients">
-      </div>
-
-      <!-- User Role Profile & Header Actions -->
-      <div class="header-actions">
-        <!-- Active User Badge -->
-        <div class="user-profile-badge" id="userProfileBtn" title="View staff profile & workstation station">
-          <div class="user-avatar-mini" id="navUserAvatar">LK</div>
-          <div>
-            <div style="font-size:0.8125rem; font-weight:700; color:var(--text-main);" id="navUserName">Lilian Kathomi</div>
-            <div style="display:flex; align-items:center; gap:0.35rem;">
-              <span class="role-tag role-specialist" id="navRoleTag">Specialist</span>
-              <span class="online-indicator" title="Station Online"></span>
-            </div>
+      <!-- Active Staff Workstation Card -->
+      <div class="sidebar-user-card" id="userProfileBtn" onclick="openUserProfileModal()" title="Click to view Staff Profile & Station">
+        <div class="user-avatar-mini" id="sidebarUserAvatar">LK</div>
+        <div class="sidebar-user-meta">
+          <div class="sidebar-user-name" id="sidebarUserName">Lilian Kathomi</div>
+          <div class="sidebar-user-role">
+            <span class="role-tag role-specialist" id="sidebarRoleTag">Specialist</span>
+            <span class="online-indicator" title="Station Active"></span>
           </div>
         </div>
+      </div>
 
-        <button class="btn btn-secondary btn-sm" id="logoutBtn" title="Log out of clinical session">
-          <span>🚪</span> Log Out
+      <!-- Sidebar Search Box -->
+      <div class="sidebar-search-box">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input type="text" id="globalSearchInput" placeholder="Search patients, MRN..." aria-label="Search patients">
+      </div>
+
+      <!-- Prominent Quick Action Button -->
+      <button class="btn btn-primary" id="openIntakeBtn" onclick="openIntakeModal()" style="width: 100%; justify-content: center; margin: 0.25rem 0 1rem 0; font-size: 0.85rem; padding: 0.65rem 0.85rem;">
+        <span>+</span> New Patient Intake
+      </button>
+
+      <!-- Navigation Menu Items -->
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Clinical Workstations</div>
+
+        <button class="nav-item active" data-view="patients" onclick="switchView('patients')" id="navItemPatients">
+          <span class="nav-item-icon">📋</span>
+          <span class="nav-item-label">Patient Queue & Roster</span>
+          <span class="nav-item-badge" id="navBadgePatients">4</span>
         </button>
 
-        <button class="btn btn-secondary btn-sm" id="themeToggleBtn" title="Toggle dark/light mode">
-          🌙 Dark Mode
+        <button class="nav-item" data-view="analytics" onclick="switchView('analytics')" id="navItemAnalytics">
+          <span class="nav-item-icon">📊</span>
+          <span class="nav-item-label">Clinical Analytics & Triage</span>
+          <span class="nav-item-badge danger" id="navBadgeRisk">1 Alert</span>
         </button>
 
-        <!-- Both Doctor Lilian Kathomi AND Reception can register patients! -->
-        <button class="btn btn-primary" id="openIntakeBtn">
-          <span>+</span> New Patient Intake
+        <button class="nav-item" data-view="billing" onclick="switchView('billing')" id="navItemBilling">
+          <span class="nav-item-icon">💳</span>
+          <span class="nav-item-label">Billing & Revenue Ledger</span>
+        </button>
+
+        <div class="sidebar-section-label" style="margin-top: 0.75rem;">Care Management</div>
+
+        <button class="nav-item" data-view="intake" onclick="switchView('intake')" id="navItemIntake">
+          <span class="nav-item-icon">🩺</span>
+          <span class="nav-item-label">New Patient Intake</span>
+        </button>
+
+        <button class="nav-item" data-view="supplements" onclick="switchView('supplements')" id="navItemSupplements">
+          <span class="nav-item-icon">💊</span>
+          <span class="nav-item-label">Supplements & Formulas</span>
+        </button>
+
+        <button class="nav-item" data-view="referrals" onclick="switchView('referrals')" id="navItemReferrals">
+          <span class="nav-item-icon">📨</span>
+          <span class="nav-item-label">Specialist Referrals</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer Actions -->
+      <div class="sidebar-footer">
+        <button class="sidebar-footer-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode">
+          <span class="btn-icon">🌙</span> <span id="sidebarThemeText">Dark Mode</span>
+        </button>
+        <button class="sidebar-footer-btn logout" id="logoutBtn" title="Log out of clinical workstation">
+          <span class="btn-icon">🚪</span> <span>Log Out Workstation</span>
         </button>
       </div>
+    </aside>
+
+    <!-- Main Content Shell (No top navbar!) -->
+    <div class="app-content-shell">
+      <!-- Floating Menu Toggle for Mobile Only -->
+      <button class="floating-mobile-menu-btn" id="mobileSidebarToggle" onclick="openMobileSidebar()" aria-label="Open Navigation Menu">
+        <span>☰</span> Menu
+      </button>
+
+      <!-- Main Viewport containing the separate Dashboards directly -->
+      <main class="main-viewport">
+        
+        <!-- ========================================================
+             DASHBOARD 1: PATIENT ROSTER & CONSULTATION QUEUE
+             ======================================================== -->
+        <section class="dashboard-view active" id="view-patients">
+          <!-- View Header -->
+          <div class="view-header" id="portalBanner">
+            <div class="view-title-group">
+              <h2 id="portalTitle">
+                <span>🩺</span> <span id="portalTitleText">Lilian Kathomi's Consultation Suite</span>
+              </h2>
+              <p id="portalSubtitle">Pediatric Nutrition & Outpatient Consultation Suite • Showing patients scheduled for Lilian Kathomi</p>
+            </div>
+
+            <!-- Scope Switcher for Doctor: [ My Scheduled (X) ] vs [ All Patients (Y) ] -->
+            <div class="scope-toggle-group" id="scopeToggleGroup">
+              <button class="scope-toggle-btn active" id="btnScopeMyPatients">
+                👤 Scheduled for Lilian (<span id="scopeMyCount">0</span>)
+              </button>
+              <button class="scope-toggle-btn" id="btnScopeAllPatients">
+                🏥 All Registered Patients (<span id="scopeAllCount">0</span>)
+              </button>
+            </div>
+          </div>
+
+          <!-- Modern Clinical Filter & Triage Toolbar -->
+          <div class="clinical-filter-bar" id="clinicalFilterBar" aria-label="Filters and Sorting">
+            <div class="filter-segmented-group" id="filterSegmentedGroup">
+              <!-- Dynamically populated based on Reception vs Specialist -->
+            </div>
+
+            <div class="filter-secondary-group">
+              <div class="filter-select-wrapper">
+                <select id="filterDietSelect" class="filter-select" aria-label="Filter by feeding type">
+                  <option value="all">Feeding Status (All)</option>
+                  <option value="exclusive-bf">🍼 Exclusive Breastfeeding</option>
+                  <option value="mixed-bf">🥣 Mixed / Partial</option>
+                  <option value="weaned">🥗 Weaned / Solids</option>
+                </select>
+              </div>
+              <div class="filter-select-wrapper">
+                <select id="filterPaymentSelect" class="filter-select" aria-label="Filter by payment mode">
+                  <option value="all">Payment (All)</option>
+                  <option value="cash">💵 Cash Invoices</option>
+                  <option value="insurance">🛡️ Insurance Claims</option>
+                </select>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="resetFiltersBtn" title="Reset all active filters">
+                <span>↺</span> Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- Outpatient Registry Queue Header -->
+          <div class="queue-header">
+            <div class="queue-title">
+              <span id="queueSectionTitle">Scheduled Outpatient Consultations</span>
+              <span class="patient-count-badge" id="patientCountBadge">0 Patients</span>
+            </div>
+          </div>
+
+          <!-- Patient Cards Grid -->
+          <section class="patient-grid" id="patientGrid" aria-label="Patient Registry">
+            <!-- Dynamically Rendered -->
+          </section>
+        </section>
+
+        <!-- ========================================================
+             DASHBOARD 2: CLINICAL ANALYTICS & TRIAGE DASHBOARD
+             ======================================================== -->
+        <section class="dashboard-view" id="view-analytics">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2><span>📊</span> Clinical Analytics & Malnutrition Triage</h2>
+              <p>Population health metrics, nutritional risk stratification, and patient flow KPIs</p>
+            </div>
+            <div>
+              <span style="background:var(--primary-light); color:var(--primary); font-weight:700; padding:0.4rem 0.85rem; border-radius:var(--radius-full); font-size:0.75rem;">
+                WHO Malnutrition Staging Active
+              </span>
+            </div>
+          </div>
+
+          <!-- Top KPI Cards Grid -->
+          <div class="stats-grid" aria-label="Clinical Metrics Overview">
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Scheduled Patients</span>
+                <span class="stat-value" id="statTotalPatients">0</span>
+                <span class="stat-subtext" id="statQueueSubtitle">Current active roster</span>
+              </div>
+              <div class="stat-icon primary">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Completed Consults</span>
+                <span class="stat-value" id="statTodayCompleted">0</span>
+                <span class="stat-subtext">Reviewed today</span>
+              </div>
+              <div class="stat-icon success">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Malnutrition Alert (MUAC &lt; 12.5)</span>
+                <span class="stat-value" id="statHighRiskMUAC" style="color: var(--danger);">0</span>
+                <span class="stat-subtext">SAM / MAM triage cases</span>
+              </div>
+              <div class="stat-icon danger">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Known Food Allergies</span>
+                <span class="stat-value" id="statAllergiesAlert" style="color: var(--warning);">0</span>
+                <span class="stat-subtext">CMPA, Egg, Peanut risk</span>
+              </div>
+              <div class="stat-icon secondary">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Outpatient Revenue</span>
+                <span class="stat-value" id="statBillingBreakdown" style="font-size: 1.25rem;">$0 / $0</span>
+                <span class="stat-subtext">Cash vs Insurance claims</span>
+              </div>
+              <div class="stat-icon purple">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detailed Analytics Panels -->
+          <div class="analytics-cards-grid">
+            <div class="analytics-panel">
+              <div class="analytics-panel-title">
+                <span>🔴</span> WHO Pediatric MUAC Malnutrition Triage
+              </div>
+              <div id="analyticsMuacList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <div class="analytics-panel">
+              <div class="analytics-panel-title">
+                <span>⚠️</span> Food Allergy & Intolerance Risk Monitor
+              </div>
+              <div id="analyticsAllergyList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <div class="analytics-panel">
+              <div class="analytics-panel-title">
+                <span>🍼</span> Infant Feeding & Gestational Demographics
+              </div>
+              <div id="analyticsFeedingList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================
+             DASHBOARD 3: OUTPATIENT BILLING & REVENUE LEDGER
+             ======================================================== -->
+        <section class="dashboard-view" id="view-billing">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2><span>💳</span> Outpatient Billing & Revenue Ledger</h2>
+              <p>Itemized patient fee invoices, cash collections, insurance pre-authorizations, and ICD-10 diagnostic coding</p>
+            </div>
+            <div>
+              <button class="btn btn-secondary btn-sm" onclick="window.print()">
+                🖨️ Print Billing Summary
+              </button>
+            </div>
+          </div>
+
+          <!-- Billing Summary Cards -->
+          <div class="stats-grid" style="margin-bottom: 1.5rem;">
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Total Billed Revenue</span>
+                <span class="stat-value" id="billingTotalGross">$0</span>
+                <span class="stat-subtext">All outpatient visits</span>
+              </div>
+              <div class="stat-icon purple"><span>💵</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Cash Collected</span>
+                <span class="stat-value" id="billingTotalCash" style="color:var(--success);">$0</span>
+                <span class="stat-subtext">Immediate point-of-sale</span>
+              </div>
+              <div class="stat-icon success"><span>🪙</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Insurance Claims</span>
+                <span class="stat-value" id="billingTotalInsurance" style="color:var(--primary);">$0</span>
+                <span class="stat-subtext">Receivables pending</span>
+              </div>
+              <div class="stat-icon primary"><span>🛡️</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Coverage Mix</span>
+                <span class="stat-value" id="billingInsuranceRatio">0%</span>
+                <span class="stat-subtext">Insured patient ratio</span>
+              </div>
+              <div class="stat-icon secondary"><span>📊</span></div>
+            </div>
+          </div>
+
+          <!-- Ledger Table -->
+          <div class="data-table-container">
+            <table class="clinical-data-table">
+              <thead>
+                <tr>
+                  <th>Patient Name & MRN</th>
+                  <th>Guardian Details</th>
+                  <th>Consultation Fee</th>
+                  <th>Supplements Fee</th>
+                  <th>Total Invoiced</th>
+                  <th>Payment Mode</th>
+                  <th>Insurance Policy / Status</th>
+                  <th>ICD-10 Diagnostic Code</th>
+                  <th>Clinical Action</th>
+                </tr>
+              </thead>
+              <tbody id="billingTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========================================================
+             DASHBOARD 4: NEW PATIENT INTAKE DESK
+             ======================================================== -->
+        <section class="dashboard-view" id="view-intake">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2><span>🩺</span> New Patient Intake & Registration Workspace</h2>
+              <p>Comprehensive outpatient admission, clinical anthropometry, food allergy screening, and initial care plan entry</p>
+            </div>
+          </div>
+
+          <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-xl); padding:2.5rem 2rem; box-shadow:var(--shadow-sm); max-width:860px; margin:0 auto; text-align:center;">
+            <div style="width:72px; height:72px; border-radius:var(--radius-full); background:var(--primary-light); color:var(--primary); font-size:2.2rem; display:flex; align-items:center; justify-content:center; margin:0 auto 1.25rem auto;">
+              🩺
+            </div>
+            <h3 style="font-size:1.45rem; font-weight:800; color:var(--text-main); margin-bottom:0.5rem;">
+              Clinical Outpatient Intake Station
+            </h3>
+            <p style="color:var(--text-secondary); font-size:0.925rem; max-width:560px; margin:0 auto 2rem auto; line-height:1.6;">
+              Admit new pediatric outpatients with full clinical details including birth weight, breastfeeding recall, 8-food-group diversity score, corrected age calculations, known food allergies, and queue routing to <strong>Lilian Kathomi's Consultation Suite</strong>.
+            </p>
+            <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+              <button class="btn btn-primary" id="launchIntakeBtn" onclick="openIntakeModal()" style="padding:0.75rem 1.85rem; font-size:0.95rem;">
+                <span>+</span> Launch Complete 9-Section Patient Intake
+              </button>
+              <button class="btn btn-secondary" onclick="switchView('patients')" style="padding:0.75rem 1.85rem; font-size:0.95rem;">
+                📋 View Patients Queue
+              </button>
+            </div>
+
+            <div style="margin-top:2.5rem; padding-top:2rem; border-top:1px dashed var(--border-color); display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; text-align:left;">
+              <div style="background:var(--bg-subtle); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+                <div style="font-weight:700; color:var(--text-main); font-size:0.85rem;">⚡ 1. Clinical Anthropometry</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">Weight, length, MUAC malnutrition triage, head circ & bilateral edema.</div>
+              </div>
+              <div style="background:var(--bg-subtle); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+                <div style="font-weight:700; color:var(--text-main); font-size:0.85rem;">🍼 2. Infant Feeding & MDD-C</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">Exclusive/Mixed BF tracking and 8-food-group diversity score.</div>
+              </div>
+              <div style="background:var(--bg-subtle); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+                <div style="font-weight:700; color:var(--text-main); font-size:0.85rem;">🛡️ 3. Cash & Insurance Billing</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">Itemized billing with ICD-10 diagnostic coding support.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================
+             DASHBOARD 5: SUPPLEMENTS & FORMULAS REGISTRY
+             ======================================================== -->
+        <section class="dashboard-view" id="view-supplements">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2><span>💊</span> Pediatric Supplements & Clinical Nutrition Formulas</h2>
+              <p>Active outpatient therapeutic regimens, specialized infant formulas, and clinical micronutrient prescriptions</p>
+            </div>
+          </div>
+
+          <div class="data-table-container">
+            <table class="clinical-data-table">
+              <thead>
+                <tr>
+                  <th>Patient Name & MRN</th>
+                  <th>Prescribed Supplement</th>
+                  <th>Dosage & Frequency</th>
+                  <th>Duration / Instructions</th>
+                  <th>Clinical Indication</th>
+                  <th>Prescribing Specialist</th>
+                </tr>
+              </thead>
+              <tbody id="supplementsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========================================================
+             DASHBOARD 6: SPECIALIST CLINICAL REFERRALS
+             ======================================================== -->
+        <section class="dashboard-view" id="view-referrals">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2><span>📨</span> Specialist Clinical Referrals Hub</h2>
+              <p>Generate, format, print, and track outbound multidisciplinary specialist referral letters</p>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1.6fr; gap:1.5rem; align-items:start;">
+            <!-- Controls Panel -->
+            <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:1.5rem; box-shadow:var(--shadow-sm);">
+              <h4 style="font-size:1rem; font-weight:800; color:var(--text-main); margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem;">
+                <span>📝</span> Referral Configuration
+              </h4>
+
+              <div class="form-group" style="margin-bottom:1rem;">
+                <label class="form-label" for="hubPatientSelect">Select Patient from Registry</label>
+                <select id="hubPatientSelect" class="form-select">
+                  <!-- Dynamically populated -->
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom:1.25rem;">
+                <label class="form-label" for="hubSpecialistSelect">Referral Department / Specialist</label>
+                <select id="hubSpecialistSelect" class="form-select">
+                  <option value="Pediatric Gastroenterologist">Pediatric Gastroenterologist (CMPA, Malabsorption, Reflux)</option>
+                  <option value="Pediatric Allergist & Immunologist">Pediatric Allergist & Immunologist (Severe Anaphylaxis/Eczema)</option>
+                  <option value="Pediatrician / Hospital Triage">Pediatrician / Hospital Inpatient Triage (SAM with Complications)</option>
+                  <option value="Pediatric Speech & Feeding Therapist">Pediatric Speech & Feeding Therapist (Dysphagia/Swallowing)</option>
+                </select>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                <button class="btn btn-primary" id="hubPrintReferralBtn" onclick="window.print()">
+                  🖨️ Print Official Referral Letter
+                </button>
+                <button class="btn btn-secondary" id="hubCopyReferralBtn">
+                  📋 Copy Letter to Clipboard
+                </button>
+              </div>
+            </div>
+
+            <!-- Preview Panel -->
+            <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:1.5rem; box-shadow:var(--shadow-sm);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color);">
+                <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Official Clinical Referral Letter Preview</span>
+                <span style="background:#dbeafe; color:#1e40af; font-size:0.7rem; font-weight:700; padding:0.2rem 0.5rem; border-radius:var(--radius-full);">Standard MOH Format</span>
+              </div>
+              <div class="referral-letter-box" id="hubReferralLetterContent" style="min-height:380px;">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+      
+        <!-- ========================================================
+             DASHBOARD 7: CLINIC APPOINTMENTS & SCHEDULE (RECEPTION)
+             ======================================================== -->
+        <section class="dashboard-view" id="view-schedule">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2><span>📅</span> Outpatient Clinic Appointment Schedule</h2>
+              <p>Consultation slot booking & daily schedule for Dr. Lilian Kathomi, RD, CNS</p>
+            </div>
+            <button class="btn btn-primary" onclick="openIntakeModal()" style="display:flex; align-items:center; gap:0.4rem;">
+              <span>+</span> Book New Patient Appointment
+            </button>
+          </div>
+
+          <div class="schedule-grid-container" id="scheduleBlocksContainer">
+            <!-- Dynamically populated by js/app.js -->
+          </div>
+        </section>
+
+    </main>
     </div>
-  </header>
-
-  <!-- Main Outpatient Workspace -->
-  <main class="main-wrapper">
-    
-    <!-- Dynamic Portal Context Banner (Reception vs Specialist Lilian Kathomi) -->
-    <section class="portal-banner" id="portalBanner">
-      <div class="portal-banner-text">
-        <h2 id="portalTitle">
-          <span>🩺</span> <span id="portalTitleText">Lilian Kathomi's Consultation Suite</span>
-        </h2>
-        <p id="portalSubtitle">Pediatric Nutrition & Outpatient Consultation Suite • Showing patients scheduled for Lilian Kathomi</p>
-      </div>
-
-      <!-- Scope Switcher for Doctor: [ My Scheduled (X) ] vs [ All Patients (Y) ] -->
-      <div class="scope-toggle-group" id="scopeToggleGroup">
-        <button class="scope-toggle-btn active" id="btnScopeMyPatients">
-          👤 Scheduled for Lilian (<span id="scopeMyCount">0</span>)
-        </button>
-        <button class="scope-toggle-btn" id="btnScopeAllPatients">
-          🏥 All Registered Patients (<span id="scopeAllCount">0</span>)
-        </button>
-      </div>
-    </section>
-
-    <!-- Top KPI Stats Grid -->
-    <section class="stats-grid" aria-label="Clinical Metrics Overview">
-      <div class="stat-card">
-        <div class="stat-info">
-          <span class="stat-label">Scheduled Patients</span>
-          <span class="stat-value" id="statTotalPatients">0</span>
-          <span class="stat-subtext" id="statQueueSubtitle">Current active roster</span>
-        </div>
-        <div class="stat-icon primary">
-          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-info">
-          <span class="stat-label">Completed Consults</span>
-          <span class="stat-value" id="statTodayCompleted">0</span>
-          <span class="stat-subtext">Reviewed today</span>
-        </div>
-        <div class="stat-icon success">
-          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-info">
-          <span class="stat-label">Malnutrition Alert (MUAC &lt; 12.5)</span>
-          <span class="stat-value" id="statHighRiskMUAC" style="color: var(--danger);">0</span>
-          <span class="stat-subtext">SAM / MAM triage cases</span>
-        </div>
-        <div class="stat-icon danger">
-          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-          </svg>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-info">
-          <span class="stat-label">Known Food Allergies</span>
-          <span class="stat-value" id="statAllergiesAlert" style="color: var(--warning);">0</span>
-          <span class="stat-subtext">CMPA, Egg, Peanut risk</span>
-        </div>
-        <div class="stat-icon secondary">
-          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-          </svg>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-info">
-          <span class="stat-label">Outpatient Revenue</span>
-          <span class="stat-value" id="statBillingBreakdown" style="font-size: 1.25rem;">$0 / $0</span>
-          <span class="stat-subtext">Cash vs Insurance claims</span>
-        </div>
-        <div class="stat-icon purple">
-          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-        </div>
-      </div>
-    </section>
-
-    <!-- Controls & Filters Toolbar -->
-    <section class="toolbar-section" aria-label="Filters and Sorting">
-      <div class="filter-group">
-        <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-right:0.25rem;">FILTER:</span>
-        <button class="filter-btn active" data-filter="all">All in View</button>
-        <button class="filter-btn danger-filter" data-filter="allergies">⚠️ Food Allergies</button>
-        <button class="filter-btn danger-filter" data-filter="muac-risk">🔴 Malnutrition (MUAC &lt; 12.5)</button>
-        <button class="filter-btn" data-filter="preterm">👶 Preterm Ex-Preemies</button>
-        <button class="filter-btn" data-filter="exclusive-bf">🍼 Exclusive BF</button>
-        <button class="filter-btn" data-filter="mixed-bf">🥣 Mixed / Partial</button>
-        <button class="filter-btn" data-filter="weaned">🥗 Weaned / Solids</button>
-        <button class="filter-btn" data-filter="cash">💵 Cash Paid</button>
-        <button class="filter-btn" data-filter="insurance">🛡️ Insurance</button>
-      </div>
-
-      <div class="toolbar-actions">
-        <button class="btn btn-secondary btn-sm" id="resetDemoBtn2" title="Synchronize and refresh clinical outpatient roster">
-          🔄 Refresh Roster
-        </button>
-      </div>
-    </section>
-
-    <!-- Outpatient Registry Queue Header -->
-    <div class="queue-header">
-      <div class="queue-title">
-        <span id="queueSectionTitle">Scheduled Outpatient Consultations</span>
-        <span class="patient-count-badge" id="patientCountBadge">0 Patients</span>
-      </div>
-    </div>
-
-    <!-- Patient Cards Grid -->
-    <section class="patient-grid" id="patientGrid" aria-label="Patient Registry">
-      <!-- Dynamically Rendered by js/app.js -->
-    </section>
-
-  </main>
+  </div>
 
   <!-- ========================================================
        MODAL 1: Patient Intake & Consultation Form
@@ -714,8 +1053,11 @@
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:0.5rem;">
+          <button class="btn btn-primary btn-sm btn-no-print" id="chartAlterEncounterBtn" title="Doctor: Add billable procedure or alter record" style="display:flex; align-items:center; gap:0.35rem;">
+            <span>⚡</span> Add Charge / Alter Record
+          </button>
           <button class="btn btn-outline btn-sm btn-no-print" id="openFollowUpBtn" title="Log a new consultation visit for this patient">
-            + Log Follow-up Visit
+            + Follow-up Visit
           </button>
           <button class="modal-close-btn" id="closeChartBtn" aria-label="Close chart">✕</button>
         </div>
@@ -1067,6 +1409,112 @@
         <button class="btn btn-secondary btn-sm" id="cancelUserProfileBtn">
           Close
         </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================
+       MODAL: Alter Encounter & Add Billable Procedure (Doctor)
+       ======================================================== -->
+  <div class="modal-overlay" id="alterEncounterModal" role="dialog" aria-modal="true" aria-labelledby="alterModalTitle">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 id="alterModalTitle" style="display:flex; align-items:center; gap:0.5rem;">
+          <span style="color:var(--primary);">⚡</span> Alter Encounter & Add Billable Services
+        </h3>
+        <button class="modal-close-btn" id="closeAlterModalBtn" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="alter-modal-hero">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h4 id="alterPatientName" style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin-bottom:0.15rem;">--</h4>
+              <div style="font-size:0.8rem; color:var(--text-muted); font-family:monospace;" id="alterPatientMRN">--</div>
+            </div>
+            <span class="workstation-badge specialist">🩺 Specialist Suite: Dr. Lilian</span>
+          </div>
+
+          <div class="alter-ledger-strip">
+            <div class="alter-ledger-item">
+              <span style="color:var(--text-muted); display:block; font-size:0.75rem;">Current Total Billed:</span>
+              <span class="alter-ledger-val" id="alterCurrentBilled" style="color:var(--primary);">$0.00</span>
+            </div>
+            <div class="alter-ledger-item">
+              <span style="color:var(--text-muted); display:block; font-size:0.75rem;">Payment Mode:</span>
+              <span class="alter-ledger-val" id="alterPaymentMode" style="font-size:0.95rem;">--</span>
+            </div>
+            <div class="alter-ledger-item">
+              <span style="color:var(--text-muted); display:block; font-size:0.75rem;">Procedures Logged:</span>
+              <span class="alter-ledger-val" id="alterProceduresCount" style="font-size:0.95rem;">0 Added</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="alterEncounterForm">
+          <input type="hidden" id="alterPatientId">
+
+          <!-- Existing Procedures List (if any) -->
+          <div id="alterExistingProceduresBox" style="margin-bottom:1rem; display:none;">
+            <label class="form-label" style="font-weight:700;">Services & Procedures Already Logged:</label>
+            <div id="alterExistingProceduresList" style="display:flex; flex-direction:column; gap:0.4rem; margin-top:0.35rem;"></div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label class="form-label" style="font-weight:700;">
+              Select Clinical Procedure / Service Performed <span class="req">*</span>
+            </label>
+            <select id="alterProcedurePreset" class="form-select" style="font-weight:600;">
+              <option value="" disabled selected>-- Choose a common pediatric procedure or Custom --</option>
+              <option value="ng-tube" data-fee="35" data-name="Pediatric NG-Tube Placement & Enteral Calibration">Pediatric NG-Tube Placement & Enteral Calibration (+$35.00)</option>
+              <option value="rehydration" data-fee="30" data-name="Emergency Hypoglycemia / Rapid Oral Rehydration Protocol">Emergency Hypoglycemia / Rapid Oral Rehydration Protocol (+$30.00)</option>
+              <option value="glucose-panel" data-fee="20" data-name="Point-of-Care Blood Glucose & Ketones Diagnostic Panel">Point-of-Care Blood Glucose & Ketones Diagnostic Panel (+$20.00)</option>
+              <option value="allergy-challenge" data-fee="25" data-name="Specialized Elemental Formula Provocation / Allergy Challenge">Specialized Elemental Formula Provocation / Allergy Challenge (+$25.00)</option>
+              <option value="micronutrient" data-fee="40" data-name="Comprehensive Micronutrient Deficiency & Anemia Screening">Comprehensive Micronutrient Deficiency & Anemia Screening (+$40.00)</option>
+              <option value="stunting" data-fee="15" data-name="Advanced Anthropometric Body Composition & Stunting Staging">Advanced Anthropometric Body Composition & Stunting Staging (+$15.00)</option>
+              <option value="lactation" data-fee="25" data-name="Pediatric Lactation Biomechanical Calibration">Pediatric Lactation Biomechanical Calibration (+$25.00)</option>
+              <option value="custom" data-fee="0" data-name="">Custom Procedure / Service (Doctor Specified)</option>
+            </select>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="alterProcedureName">Procedure / Service Name <span class="req">*</span></label>
+              <input type="text" id="alterProcedureName" class="form-input" placeholder="e.g. NG-Tube Placement" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="alterProcedureFee">Additional Fee to Charge ($ USD) <span class="req">*</span></label>
+              <input type="number" step="1.00" min="0" id="alterProcedureFee" class="form-input" placeholder="e.g. 35.00" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top:0.75rem;">
+            <label class="form-label" for="alterProcedureNotes">Clinical Notes & Justification for Additional Charge</label>
+            <textarea id="alterProcedureNotes" class="form-textarea" rows="2" placeholder="e.g. Severe nutritional faltering; infant required rapid oral electrolyte rehydration protocol and enteral tolerance monitoring."></textarea>
+          </div>
+
+          <div style="margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--border-color);">
+            <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom:0.5rem; text-transform:uppercase;">
+              Optional: Alter Patient Clinical Record
+            </div>
+            <div class="form-group" style="margin-bottom:0.75rem;">
+              <label class="form-label" for="alterConditionDiagnosed">Updated Clinical Diagnosis / Condition</label>
+              <input type="text" id="alterConditionDiagnosed" class="form-input" placeholder="Enter revised diagnosis if updated...">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="alterRecommendedManagement">Updated Management Plan / Prescription</label>
+              <textarea id="alterRecommendedManagement" class="form-textarea" rows="2" placeholder="Enter altered therapeutic management instructions..."></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer" style="padding:1rem 0 0 0; margin-top:1.25rem;">
+            <button type="button" class="btn btn-secondary" id="cancelAlterBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="saveAlterBtn">
+              <span>⚡</span> Save Alterations & Bill Patient
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
